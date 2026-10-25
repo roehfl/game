@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>game 공통 하네스 - 자기개선 루프와 두 범위</title>
+  <style>
+    body { margin: 0; font-family: Arial, "Malgun Gothic", sans-serif; color: #17212f; background: #f5f7fb; line-height: 1.55; }
+    header { background: #18324a; color: #fff; padding: 34px 42px; }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 24px 56px; }
+    h1 { margin: 0 0 8px; font-size: 30px; letter-spacing: 0; }
+    h2 { margin: 34px 0 14px; font-size: 21px; }
+    h3 { margin: 0 0 10px; font-size: 16px; }
+    p { margin: 0 0 10px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; overflow: hidden; margin-bottom: 18px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid #e8edf4; text-align: left; vertical-align: top; font-size: 14px; }
+    th { background: #edf3f8; color: #26384c; font-weight: 700; }
+    tr:last-child td { border-bottom: 0; }
+    code { font-family: Consolas, monospace; background: #eef3f8; padding: 2px 5px; border-radius: 4px; }
+    pre { background: #101827; color: #eef6ff; padding: 14px; border-radius: 8px; overflow: auto; font-size: 13px; }
+    .badge { display: inline-block; padding: 4px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .done { background: #d9f3e5; color: #146137; }
+    .info { background: #dbeafe; color: #1d4ed8; }
+    .pending { background: #fff0c2; color: #765300; }
+    .out { background: #f6d9dc; color: #842029; }
+    .warn { background: #ffe8b3; color: #7a4b00; }
+    .muted { background: #e8edf2; color: #536171; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .summary { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+    .card { background: #fff; border: 1px solid #d9e2ec; border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+    .list { margin: 0; padding-left: 18px; }
+    .list li { margin: 5px 0; }
+    .small { font-size: 13px; color: #536171; }
+    .transition { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+    .transition .state { background: #edf3f8; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 13px; }
+    .transition .arrow { color: #536171; font-size: 16px; }
+    .transition .action { font-size: 12px; color: #1d4ed8; }
+    @media (max-width: 880px) {
+      header { padding: 26px 22px; }
+      main { padding: 20px 14px 38px; }
+      .grid, .two, .summary { grid-template-columns: 1fr; }
+      th, td { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>D:/game — 게임 개발 공통 하네스</div>
+  <h1>공통 하네스 레벨 1 - 자기개선 루프와 두 범위(게임 / 공통)</h1>
+  <span class="badge done">설계·구현 완료</span>
+  <span class="badge info">hsl 이전·연결</span>
+  <span class="badge pending">커밋 전</span>
+  <span class="badge muted">작성일: 2026-10-25</span>
+</header>
+
+<main>
+
+  <section class="summary">
+    <div class="card">
+      <h2>요약</h2>
+      <p><code>D:/game</code> 아래 게임들이 함께 쓰는 공통 하네스를 만들었다. hsl 하네스의 자기개선 루프(근거 수집 → Propose → Compose → 사용자 선택 → Reflect → 승인 뒤 반영)는 그대로 쓴다.</p>
+      <p>새로 더한 것은 편집마다 정하는 <strong>범위</strong>다. "다른 게임에서도 같은 결함이 같은 편집으로 막히는가"에 답해 <strong>이 게임 하네스만</strong> 바꾸거나 <strong>game 전체 공통 하네스</strong>를 바꾼다. 판단이 안 서면 게임 범위에 두고, 다른 게임에서 다시 관찰되면 공통으로 승격한다.</p>
+      <p>게임 세션은 상위 폴더의 <code>.claude</code>를 읽지 않는다(실측). 그래서 공통 스킬·서브에이전트는 정션으로 연결하고, 새 게임은 <code>tools/new-game.sh</code>로 만든다. 같은 날 S2가 끝난 hsl을 <code>D:/game/hsl</code>로 옮겨 첫 게임으로 연결했다.</p>
+    </div>
+    <div class="card">
+      <h2>현황</h2>
+      <p><span class="badge done">공통 하네스 파일 22개 작성</span></p>
+      <p><span class="badge done">로드·훅·정션 실측 통과</span></p>
+      <p><span class="badge done">시험 게임으로 끝까지 검증</span></p>
+      <p><span class="badge done">hsl 이전·연결, 빌드·테스트 통과</span></p>
+      <p><span class="badge info">D:/game git init(커밋 없음)</span></p>
+      <p><span class="badge pending">첫 reflect 실행 대기</span></p>
+      <p><span class="badge out">Probe(레벨 2) 범위 외</span></p>
+    </div>
+  </section>
+
+  <section>
+    <h2>범위</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>설계/구현 범위</h3>
+        <p><span class="badge done">완료</span></p>
+        <ul class="list">
+          <li>공통 <code>AGENTS.md</code>(모든 게임 세션에 자동 로드)</li>
+          <li><code>harness-reflect</code> 스킬과 서브에이전트 셋의 두 범위판</li>
+          <li>범위 판정 기준·반영 위치(<code>harness/README.md</code>)</li>
+          <li>공통 교훈 색인 G-001~G-008(hsl에서 이관)</li>
+          <li><code>new-game.sh</code>·<code>link-common.sh</code>·<code>harness-tool-log.sh</code></li>
+          <li>새 게임 틀 <code>templates/game/</code></li>
+          <li>hsl 이전·연결(<code>D:/hsl</code> → <code>D:/game/hsl</code>)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>미구현</h3>
+        <p><span class="badge pending">대기</span></p>
+        <ul class="list">
+          <li>공통 저장소 첫 커밋, hsl 변경 커밋(사용자 결정 대기)</li>
+          <li>실제 과제에 대한 첫 reflect — 서브에이전트의 범위 판정은 아직 돌려보지 않음(hsl S2 돌아보기가 첫 실전)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>범위 외</h3>
+        <p><span class="badge out">제외</span></p>
+        <ul class="list">
+          <li>Probe(<code>--probe</code>, 레벨 2)</li>
+          <li><code>chatgpt-connector-review</code> 등 루프 밖 hsl 스킬의 공통화</li>
+          <li>hsl 전투 체감 교훈 L-009~L-011의 공통화(게임 범위로 남김)</li>
+          <li>hsl 옛 계획서의 <code>D:/hsl</code> 경로(기록)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>구조</h2>
+    <div class="two">
+      <div class="card">
+        <h3>공통 하네스와 게임 하네스</h3>
+        <p><span class="badge info">두 저장소</span></p>
+        <pre>
+D:/game/                         공통 저장소(게임 폴더는 .gitignore로 제외)
+  AGENTS.md                      공통 기본 하네스
+  .claude/skills/harness-reflect/
+  .claude/agents/harness-{proposer,composer,reflector}.md
+  .claude/settings.json          D:/game 세션용 도구 로그 훅
+  tools/  new-game.sh · link-common.sh · harness-tool-log.sh
+  templates/game/                새 게임 틀
+  harness/ README.md · LESSONS.md(G-NNN) · library/&lt;출처&gt;/&lt;과제&gt;/
+
+D:/game/&lt;게임&gt;/                  게임 저장소
+  AGENTS.md                      게임 고유 규칙만
+  .claude/settings.json          훅 ──► ../tools/harness-tool-log.sh
+  .claude/skills/&lt;게임 스킬&gt;/
+  .claude/skills/harness-reflect ──► 공통(정션)
+  .claude/agents/_common          ──► 공통(정션)
+  harness/ LESSONS.md(L-NNN) · library/&lt;과제&gt;/ · runs/(git 제외)</pre>
+      </div>
+      <div class="card">
+        <h3>게임 세션에서 읽히는 것</h3>
+        <p><span class="badge done">실측</span></p>
+        <table>
+          <tr><th>항목</th><th>읽히는 방식</th></tr>
+          <tr><td>공통 <code>AGENTS.md</code></td><td>상위 폴더라서 자동 로드</td></tr>
+          <tr><td>게임 <code>AGENTS.md</code></td><td>세션 폴더라서 자동 로드</td></tr>
+          <tr><td>공통 스킬</td><td>스킬마다 정션 <code>.claude/skills/&lt;스킬&gt;</code></td></tr>
+          <tr><td>공통 서브에이전트</td><td>정션 하나 <code>.claude/agents/_common</code></td></tr>
+          <tr><td>도구 로그 훅</td><td>게임 <code>settings.json</code>이 <code>../tools/</code>를 부름</td></tr>
+          <tr><td>정션의 git 제외</td><td>게임 저장소 <code>.git/info/exclude</code>(스크립트가 관리)</td></tr>
+        </table>
+        <p class="small">게임 작업은 게임 폴더에서 세션을 연다. <code>D:/game</code>에서 열면 게임 AGENTS.md·스킬이 시작 시 읽히지 않는다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>범위 판정</h2>
+    <div class="card" style="border-left: 4px solid #1d4ed8;">
+      <h3><span class="badge info">판정 질문</span> 다른 게임에서 같은 과제를 해도 같은 결함이 나고, 같은 편집으로 막히는가?</h3>
+      <table>
+        <tr><th>답</th><th>범위</th><th>결함이 있는 곳</th><th>예</th></tr>
+        <tr><td>예</td><td><span class="badge done">공통</span></td><td>에이전트 습관, 사용자와의 확인 방식, 도구·환경(Windows·Claude Code·git), 하네스 루프 자체</td><td>hsl L-001 질문 완결, L-005 외부 전제 확인</td></tr>
+        <tr><td>아니오</td><td><span class="badge warn">게임</span></td><td>이 게임의 설계 결정, 장르 감각, 수치, 코드 구조, 문서 배치</td><td>hsl L-009~L-011 전투 체감</td></tr>
+        <tr><td>판단이 안 섬</td><td><span class="badge warn">게임</span></td><td>—</td><td>다른 게임에서 재관찰되면 승격</td></tr>
+      </table>
+      <p class="small">엔진·툴체인 지식은 그 엔진을 쓰는 게임이 하나면 게임 범위, 둘 이상이면 공통 스킬.</p>
+    </div>
+
+    <div class="two">
+      <div class="card">
+        <h3>범위 × 종류 반영 위치</h3>
+        <table>
+          <tr><th>범위</th><th>invariant</th><th>domain</th></tr>
+          <tr><td>게임</td><td><code>&lt;게임&gt;/AGENTS.md</code>, 게임 훅</td><td><code>&lt;게임&gt;/.claude/skills·agents</code>, <code>&lt;게임&gt;/tools/</code></td></tr>
+          <tr><td>공통</td><td><code>AGENTS.md</code>, <code>tools/harness-tool-log.sh</code>, 틀의 훅</td><td><code>.claude/skills·agents</code>, <code>tools/</code>, <code>templates/game/</code></td></tr>
+        </table>
+        <p class="small">교훈 ID는 공통 <code>G-NNN</code>, 게임마다 <code>L-NNN</code>. patch 경로는 <code>patch/common/…</code>(D:/game 기준), <code>patch/game/…</code>(게임 기준).</p>
+      </div>
+      <div class="card">
+        <h3>승격과 강등</h3>
+        <div class="transition">
+          <span class="state">게임 L-NNN</span><span class="arrow">&rarr;</span>
+          <span class="action">(두 번째 게임 재관찰 · 게임 무관 근거)</span><span class="arrow">&rarr;</span>
+          <span class="state">공통 G-NNN</span>
+        </div>
+        <div class="transition">
+          <span class="state">공통 G-NNN</span><span class="arrow">&rarr;</span>
+          <span class="action">(어떤 게임에서 사용자 교정으로 안 맞음)</span><span class="arrow">&rarr;</span>
+          <span class="state">게임 L-NNN</span>
+        </div>
+        <p class="small">승격은 "공통 추가 + 이 게임의 같은 문장 삭제"를 한 편집으로 낸다. 게임 LESSONS 행은 <code>승격 → G-NNN</code>으로 남는다. 다른 게임에 남은 중복은 그 게임의 다음 reflect에서 지운다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>루프에서 바뀐 점</h2>
+    <table>
+      <tr><th>단계</th><th>hsl과 같은 것</th><th>더한 것</th></tr>
+      <tr><td>0 과제 정의</td><td><code>task.md</code></td><td>위치(게임 이름 또는 <code>_root</code>), <code>RUN = &lt;세션 폴더&gt;/harness/runs/&lt;과제 ID&gt;/</code></td></tr>
+      <tr><td>1 근거 수집</td><td>사용자 교정이 가장 강한 근거</td><td>범위 밖 변경에 공통 하네스·다른 게임을 포함</td></tr>
+      <tr><td>2 Propose</td><td>invariant·domain 후보, 근거 없는 편집 금지</td><td>편집마다 범위, 다른 게임 LESSONS로 재관찰 확인, 승격·중복 정리·강등 편집</td></tr>
+      <tr><td>3 Compose</td><td>편집별 결정, probe-less는 사용자 교정 대응만 채택 권고</td><td>범위 열, 범위 근거, "범위 조정"·"영향 범위" 절. 넓히기(게임→공통)는 제안만</td></tr>
+      <tr><td>4 사용자 선택</td><td>결정 표를 그대로 보임</td><td>범위도 확정, 공통 편집이면 영향 받는 게임 목록</td></tr>
+      <tr><td>5 Reflect</td><td>EXPERIENCE.md·patch·LESSONS 한 줄</td><td>범위별 라이브러리·색인, 승격 상태 기록</td></tr>
+      <tr><td>6 반영</td><td>승인 뒤 복사, 커밋 없음</td><td>저장소별 목록, 공통 스킬이 바뀌면 <code>link-common.sh</code></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>hsl 이전·연결</h2>
+    <div class="card" style="border-left: 4px solid #146137;">
+      <h3><span class="badge done">완료</span> <code>D:/hsl</code> → <code>D:/game/hsl</code> (2026-10-25)</h3>
+      <p>S2(S2-1~S2-3)가 main에 머지된 뒤, S2 돌아보기 전에 옮겼다. D:/hsl을 작업 폴더로 쓰던 Claude 세션 셋이 폴더를 잡고 있어 사용자 승인으로 보관(archive)한 뒤 이동했다.</p>
+      <table>
+        <tr><th>대상</th><th>바꾼 것</th><th>범위 판정</th></tr>
+        <tr><td>hsl 루프 파일</td><td><code>harness-reflect</code> 스킬, <code>harness-*</code> 서브에이전트 셋, <code>tools/harness-tool-log.sh</code> 삭제 → 공통 정션 사용</td><td>공통(이름 충돌 제거)</td></tr>
+        <tr><td><code>.claude/settings.json</code></td><td>공통 틀로 교체(<code>../tools/</code>, <code>PostToolUseFailure</code> 포함)</td><td>공통</td></tr>
+        <tr><td><code>settings.local.json</code></td><td><code>HSL_TASK</code> → <code>HARNESS_TASK</code>(값은 그대로)</td><td>—</td></tr>
+        <tr><td><code>AGENTS.md</code></td><td>공통과 겹치는 L-001·L-002·L-004~L-007, git·언어 규칙 삭제. 위치·경로 문구 갱신</td><td>중복 정리</td></tr>
+        <tr><td><code>harness/LESSONS.md</code></td><td>L-001~L-008 상태 <code>승격 → G-00N</code>, L-009~L-011 유지</td><td>승격 / 게임</td></tr>
+        <tr><td><code>harness/README.md</code></td><td>공통 루프를 가리키는 안내로 교체</td><td>—</td></tr>
+        <tr><td>Claude 메모리</td><td><code>D--hsl</code> → <code>D--game-hsl</code> 복사, 상태 기록 갱신. 옛 전사는 <code>D--hsl</code>에 남음</td><td>—</td></tr>
+      </table>
+      <p class="small">hsl 쪽 변경은 커밋 전이다. 삭제 다섯 파일은 <code>git rm</code>으로 스테이징됐고 나머지는 작업 트리 변경이다.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>결정 로그</h2>
+    <table>
+      <tr><th>#</th><th>결정</th><th>근거</th></tr>
+      <tr><td>1</td><td>invariant/domain(종류)과 별도로 게임/공통(범위) 축을 더했다</td><td>사용자 요구: 자기개선 방식은 유지하고 개선 방향에 따라 반영 위치를 나눔</td></tr>
+      <tr><td>2</td><td>판단이 안 서면 게임 범위, 재관찰되면 승격</td><td>한 게임의 취향이 모든 게임의 규칙이 되는 것을 막음(hsl 원칙 3의 확장)</td></tr>
+      <tr><td>3</td><td>공통 스킬·서브에이전트를 디렉터리 정션으로 연결</td><td>부모 <code>.claude</code> 미로드 실측. <code>additionalDirectories</code>는 신뢰하지 않은 폴더에서 무시되고 신뢰가 부모에서 이어지지 않음</td></tr>
+      <tr><td>4</td><td>정션 제외는 게임 저장소의 <code>.git/info/exclude</code>에 적음</td><td>공통 스킬이 늘거나 줄어도 게임 저장소에 커밋할 변경이 생기지 않음</td></tr>
+      <tr><td>5</td><td>범위를 게임에서 공통으로 넓히는 확정은 사용자만 함</td><td>공통 편집은 모든 게임에 미침</td></tr>
+      <tr><td>6</td><td>한 세션은 다른 게임 폴더를 고치지 않음</td><td>범위 이탈 방지. 중복은 그 게임의 다음 reflect가 정리</td></tr>
+      <tr><td>7</td><td>도구 로그 실패 판정을 <code>PostToolUseFailure</code> 이벤트로 바꿈</td><td>hsl 훅은 실패 0건 기록(S1 E12). 실패 때는 <code>tool_response</code>가 없고 Python 출력의 <code>\r</code>도 비교를 깸. 실제 세션으로 확인</td></tr>
+      <tr><td>8</td><td>hsl L-001~L-008을 G-001~G-008로 옮기고 L-009~L-011은 남김</td><td>판정 질문을 적용: 앞의 것은 게임과 무관, 뒤의 것은 hsl 전투 체감</td></tr>
+      <tr><td>9</td><td><code>D:/game</code>을 git 저장소로 만들고 허용 목록 방식 <code>.gitignore</code>로 게임 폴더를 뺌</td><td>기본 하네스 = git HEAD 원칙. 새 게임 폴더가 자동으로 빠짐</td></tr>
+      <tr><td>10</td><td>교훈 ID 접두를 <code>G-</code>/<code>L-</code>로 나눔</td><td>AGENTS.md 주석만 보고도 어느 범위의 교훈인지 구분</td></tr>
+      <tr><td>11</td><td>hsl은 S2가 main에 머지된 뒤, S2 돌아보기 전에 옮김</td><td>진행 중이던 S2-3 계획(<code>D:/hsl</code> 경로 26곳)을 깨지 않고, S2 돌아보기를 두 범위 루프의 첫 실전으로 삼음(사용자 결정)</td></tr>
+      <tr><td>12</td><td>hsl 자체 루프 파일은 지우고 공통 것을 정션으로 씀</td><td>같은 이름 스킬은 연결이 건너뛰어지고, 같은 이름 서브에이전트가 두 벌 생김</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>미결 사항</h2>
+    <table>
+      <tr><th>#</th><th>질문</th><th>현재 입장</th></tr>
+      <tr><td>1</td><td>공통 저장소의 첫 커밋을 언제 할까?</td><td>요청 없이 커밋하지 않는다. 기본 하네스 = HEAD이므로 첫 게임을 만들기 전에 커밋하는 것을 권한다.</td></tr>
+      <tr><td>2</td><td>hsl의 과제 변수 <code>HARNESS_TASK</code>를 무엇으로 둘까?</td><td>값이 아직 S1 과제 ID라 S2 작업의 도구 로그가 S1 실행 근거에 섞여 있다. S2 돌아보기를 시작할 때 S2 과제 ID로 정하고, 섞인 로그는 그 근거로 쓴다.</td></tr>
+      <tr><td>3</td><td>데스크톱 앱 대화형 세션에서도 같은 로드 결과가 나올까?</td><td><code>claude -p</code>로만 확인했다. 정션 방식은 신뢰와 무관해서 같을 것으로 보지만 미확인.</td></tr>
+      <tr><td>4</td><td>서브에이전트가 범위를 판정 기준대로 정할까?</td><td>첫 과제의 reflect에서 DECISION.md의 범위 근거 열로 확인한다.</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>변경 파일</h2>
+    <div class="two">
+      <div>
+        <h3>공통 하네스 (신규, <code>D:/game</code> 기준)</h3>
+        <table>
+          <tr><th>파일</th><th>역할</th></tr>
+          <tr><td><code>AGENTS.md</code></td><td>공통 기본 하네스</td></tr>
+          <tr><td><code>.claude/skills/harness-reflect/SKILL.md</code></td><td>루프 진입점(두 범위)</td></tr>
+          <tr><td><code>.claude/agents/harness-proposer.md</code></td><td>후보 편집과 범위</td></tr>
+          <tr><td><code>.claude/agents/harness-composer.md</code></td><td>결정·범위 검증·영향 범위</td></tr>
+          <tr><td><code>.claude/agents/harness-reflector.md</code></td><td>범위별 라이브러리·색인</td></tr>
+          <tr><td><code>.claude/settings.json</code></td><td>D:/game 세션용 도구 로그 훅</td></tr>
+          <tr><td><code>harness/README.md</code></td><td>루프·범위 판정·반영 위치</td></tr>
+          <tr><td><code>harness/LESSONS.md</code></td><td>공통 색인 G-001~G-008</td></tr>
+          <tr><td><code>harness/library/.gitkeep</code></td><td>공통 라이브러리</td></tr>
+          <tr><td><code>tools/harness-tool-log.sh</code></td><td>도구 로그 훅(실패 구분)</td></tr>
+          <tr><td><code>tools/link-common.sh</code></td><td>정션 연결·정리·git 제외</td></tr>
+          <tr><td><code>tools/new-game.sh</code></td><td>새 게임 생성</td></tr>
+          <tr><td><code>.gitignore</code>, <code>.gitattributes</code></td><td>게임 폴더·실행 근거 제외, LF</td></tr>
+          <tr><td><code>docs/specs/2026-10-25-common-harness-design.md</code></td><td>설계서</td></tr>
+          <tr><td><code>docs/archive/reports/common-harness_implementation.html</code></td><td>이 보고서</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3>새 게임 틀 (신규, <code>templates/game/</code>)</h3>
+        <table>
+          <tr><th>파일</th><th>역할</th></tr>
+          <tr><td><code>AGENTS.md</code></td><td>게임 기본 하네스 틀(<code>{{GAME}}</code>·<code>{{DATE}}</code>)</td></tr>
+          <tr><td><code>.claude/settings.json</code></td><td>훅 → <code>../tools/harness-tool-log.sh</code></td></tr>
+          <tr><td><code>harness/LESSONS.md</code></td><td>게임 색인 L-NNN(빈 표)</td></tr>
+          <tr><td><code>harness/library/.gitkeep</code></td><td>게임 라이브러리</td></tr>
+          <tr><td><code>.gitignore</code>, <code>.gitattributes</code></td><td>실행 근거·로컬 설정 제외, LF</td></tr>
+        </table>
+        <p class="small">hsl 쪽 변경은 위 "hsl 이전·연결" 절에 있다. 실측용 임시 폴더(<code>D:/tmp/hprobe</code>, <code>D:/game/_hprobe</code>, 시험 게임 <code>zz-check</code>)는 모두 지웠다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>검증 결과</h2>
+    <div class="card">
+      <p>도구: Claude Code <code>2.1.291</code>, <code>claude -p</code> 비대화형 세션, Git Bash</p>
+      <table>
+        <tr><th>검증</th><th>확인 내용</th><th>상태</th></tr>
+        <tr><td>문법</td><td><code>bash -n</code> 스크립트 3개, JSON 설정 2개</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td>로드 실측</td><td>하위 세션: 부모 AGENTS.md 로드, 부모 <code>.claude</code> 미로드. 상위 세션: 하위 AGENTS.md·스킬은 시작 시 미로드</td><td><span class="badge done">확인</span></td></tr>
+        <tr><td>정션</td><td>스킬은 스킬마다, 서브에이전트는 폴더 하나로 로드. <code>skills/_common/&lt;스킬&gt;</code>는 미로드</td><td><span class="badge done">확인</span></td></tr>
+        <tr><td>정션 삭제 안전</td><td>Git Bash <code>rm -rf</code>, PowerShell <code>Remove-Item -Recurse</code> 모두 원본 보존</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td>도구 로그 훅</td><td>실제 세션: Bash <code>exit 3</code>·없는 파일 Read는 <code>"error":"true"</code>, 성공은 <code>""</code>. 과제 ID 없음·<code>a/b</code>는 기록 안 함</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td><code>new-game.sh</code></td><td>생성·git init·연결. 잘못된 이름, 예약어(<code>tools</code>), 이미 있는 이름은 거부</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td><code>link-common.sh</code></td><td>재실행해도 중복 없음, 없어진 공통 스킬의 정션 제거, 같은 이름 게임 스킬은 경고하고 건너뜀</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td>git 분리</td><td>게임 저장소 status에 정션·실행 근거·로컬 설정 없음. 공통 저장소 status에 게임 폴더 0건</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td>시험 게임 세션</td><td>AGENTS.md 2개(공통·게임), <code>harness-reflect</code>, 서브에이전트 3개 로드</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td>hsl 빌드·테스트</td><td>옮긴 위치에서 <code>dotnet build -warnaserror</code> 경고 0, xUnit 261/261, 씬 테스트 21/21, 자동 진행 18방 <code>Cleared</code>(이전 기록과 같음)</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td>hsl 세션 로드</td><td>공통·hsl AGENTS.md, 스킬 <code>harness-reflect</code>·<code>combat-feel</code>·<code>chatgpt-connector-review</code>, 서브에이전트 셋이 중복 없이 로드</td><td><span class="badge done">통과</span></td></tr>
+        <tr><td>첫 reflect</td><td>서브에이전트의 범위 판정·범위별 기록</td><td><span class="badge pending">미검증</span></td></tr>
+        <tr><td><code>D:/game</code> 세션 훅</td><td>이 세션은 설정 파일이 생기기 전에 시작되어 다음 세션부터 적용</td><td><span class="badge pending">미검증</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>다음 단계 권장</h2>
+    <div class="card">
+      <p><span class="badge info">다음</span> <strong>두 저장소 커밋 → hsl S2 돌아보기</strong></p>
+      <p>공통 하네스(<code>D:/game</code>)와 hsl 변경을 커밋해 기본 하네스(HEAD)로 고정한 뒤, <code>D:/game/hsl</code>에서 세션을 열어 S2 돌아보기(<code>harness-reflect</code>)를 돌린다. 두 범위 루프의 첫 실전이다.</p>
+      <p class="small">그 뒤: hsl S3 설계. 새 게임은 <code>bash tools/new-game.sh &lt;이름&gt;</code>. 레벨 2(Probe)는 테스트로 완료가 판정되는 과제가 생길 때 검토한다.</p>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

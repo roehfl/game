@@ -1,0 +1,21 @@
+# 공통 하네스만 추적한다. 게임 폴더는 각자 별도 git 저장소라 모두 뺀다.
+/*
+!/.gitignore
+!/.gitattributes
+!/AGENTS.md
+!/.claude/
+!/docs/
+!/harness/
+!/templates/
+!/tools/
+
+# Claude Code 로컬
+/.claude/settings.local.json
+/.claude/worktrees/
+
+# 하네스 실행 근거 (라이브러리로 승격된 것만 남긴다)
+/harness/runs/
+
+# OS
+Thumbs.db
+desktop.ini
