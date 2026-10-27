@@ -6,7 +6,7 @@ G-001~G-008은 hsl에서 옮겼다(2026-10-25). 원 근거는 항목 열의 hsl 
 
 | ID | 적용 조건 | 교훈 | 상태 | 항목 |
 |---|---|---|---|---|
-| G-001 | 사용자에게 묻는 모든 메시지(wrap_up 질문·버튼, 부가 질문) — 모든 과제 | 사용자가 채워 넣어야 완성되는 질문·버튼 메시지를 쓰지 않는다. 그대로 눌러도(답해도) 완결된 답이 되게 쓴다. | 채택 | hsl L-001 `D:/game/hsl/harness/library/2026-10-23-harness2-design/EXPERIENCE.md` |
+| G-001 | 사용자에게 묻는 모든 메시지(wrap_up 질문·버튼, 부가 질문), 결정을 묻거나 남은 문제(리뷰 발견, 알려진 한계)를 알리는 보고 — 모든 과제 | 사용자가 채워 넣어야 완성되는 질문·버튼 메시지를 쓰지 않는다. 그대로 눌러도(답해도) 완결된 답이 되게 쓴다. 결정을 묻거나 남은 문제를 알리는 보고는 증상만 적지 않고 무엇이 문제인지를 구체 예·수치로 보이며, 고를 대안과 각 결과를 같은 메시지에 둔다. | 채택 | hsl L-001 `D:/game/hsl/harness/library/2026-10-23-harness2-design/EXPERIENCE.md`; 확장(결정·남은 문제 보고) proxywar `D:/game/harness/library/proxywar/2026-10-27-proxywar-sim-core-1b-1/EXPERIENCE.md` |
 | G-002 | 하네스·설정 파일을 만들거나 고치는 세션 | `CLAUDE.md`는 두지 않는다. Claude Code는 `AGENTS.md`와 상위 폴더의 `AGENTS.md`를 자동 로드한다(2.1.291, 2026-10-25 재확인). | 채택 | hsl L-002 `D:/game/hsl/harness/library/2026-10-23-harness2-design/EXPERIENCE.md`; 상위 폴더 로드는 `docs/specs/2026-10-25-common-harness-design.md` §2 |
 | G-003 | 하네스 파일 편집 전반(Proposer 후보 작성, 기본 하네스 작성·재작성) | 편집은 추가만이 아니다. 근거 없이 남아 있거나 결함을 낳은 기존 문장의 삭제·축소도 같은 자격의 편집이며, 더하기 전에 뺄 것이 있는지 먼저 본다. | 채택 | hsl L-003 `D:/game/hsl/harness/library/2026-10-23-harness2-design/EXPERIENCE.md` |
 | G-004 | 승인된 설치·다운로드·실행이 있는 과제, 설계서·계획에서 실행 주체를 정하는 단계 | 승인 뒤의 설치·다운로드·실행은 사용자에게 넘기지 않고 에이전트가 한다. 설계서·계획에 "사용자 실행"을 두지 않고, UAC·샌드박스에 막히면 우회를 먼저 한다. | 채택 | hsl L-004 `D:/game/hsl/harness/library/2026-10-23-s0-tech-foundation/EXPERIENCE.md` |

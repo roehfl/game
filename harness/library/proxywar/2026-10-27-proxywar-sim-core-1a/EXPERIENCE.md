@@ -45,12 +45,14 @@ RUN 경로는 세션 폴더 `D:/game/proxywar` 기준(`harness/runs/`는 git에�
 - 근거: `RUN/reference/evidence.md` L23(전투 버그 회귀 테스트를 시드 하나로 써 버그가 드러나지 않음, 수정을 빼고 돌려서야 앎), L20(계획에 직접 쓴 전투 코드의 Critical 버그를 리뷰 탐침이 찾음), L34(자기 보고). 사용자 교정이 아니고 두 번 모두 리뷰가 막았다(`RUN/DECISION.md` L8·L17).
 - 다른 게임 재관찰: hsl `D:/game/hsl/harness/runs/2026-10-24-s1-combat-core/reference/evidence.md` L19·L29(E14·E23, 자기 구현에서 끌어낸 기대값이 판정 1틱 지연을 고정), 그때 hsl `DECISION.md` #3으로 보류. 이번이 두 게임째다. hsl 폴더는 고치지 않았다.
 - 채택 시: invariant patch L30을 `D:/game/AGENTS.md` L30 자리에 넣고, 내용이 "검증 출력 읽기"와 "테스트가 결함을 잡는지" 둘이 되므로 공통 `LESSONS.md` G-006 행의 적용 조건도 넓힌다(`RUN/DECISION.md` L17).
+- 재관찰: proxywar/2026-10-27-proxywar-sim-core-1b-1 (판별력 없는 계획 테스트 5개, 다시 보류. `D:/game/harness/library/proxywar/2026-10-27-proxywar-sim-core-1b-1/EXPERIENCE.md` 보류 편집 2)
 
 ### 보류 — 편집 3: 긴 본문은 Bash heredoc 대신 Write 후 `cat >>`
 - 편집: "환경 메모"에 한 줄 추가(`RUN/candidates/invariant/patch/common/AGENTS.md` L38, 임시 주석 `<!-- G-009 -->`).
 - 근거: `RUN/reference/evidence.md` L25(heredoc → `unexpected EOF while looking for matching '`, Write 후 cat으로 해결). 사용자 교정이 아니고 비용은 재시도 1회, 원인이 오류 메시지에 바로 보인다(`RUN/DECISION.md` L9·L18).
 - 다른 게임 재관찰: hsl `D:/game/hsl/harness/runs/2026-10-24-s1-combat-core/reference/evidence.md` L24(E19 `ENAMETOOLONG`)·L17(E12), 그때 hsl `DECISION.md` #5로 보류. hsl 폴더는 고치지 않았다.
 - 번호: 채택되면 그 시점 공통 색인의 다음 빈 번호(지금은 G-009). 번호는 점유하지 않았다. 채택 시 후보 문장의 경위 서술("…오류가 났다")은 빼는 편이 원칙 중심 문서에 맞다(`RUN/DECISION.md` L18).
+- 재관찰: proxywar/2026-10-27-proxywar-sim-core-1b-1 (서브에이전트 2개, 다시 보류. `D:/game/harness/library/proxywar/2026-10-27-proxywar-sim-core-1b-1/EXPERIENCE.md` 보류 편집 3)
 
 ### 게임 범위로 따로 기록한 것
 편집 4(채택, L-003)와 5·6(보류)은 `D:/game/proxywar/harness/library/2026-10-27-proxywar-sim-core-1a/EXPERIENCE.md`에 있다.
