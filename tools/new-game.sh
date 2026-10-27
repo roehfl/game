@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 새 게임 폴더를 만든다: templates/game 복사 → git init(커밋 없음) → 공통 스킬·서브에이전트 정션 연결.
+# 새 게임 폴더를 만든다: templates/game 복사 → git init(main 브랜치, 커밋 없음) → 공통 스킬·서브에이전트 정션 연결.
 # 사용: bash tools/new-game.sh <게임 폴더 이름>   (영문 소문자·숫자·하이픈)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -14,6 +14,6 @@ dest="$ROOT/$name"
 
 cp -r "$ROOT/templates/game" "$dest"
 sed -i "s/{{GAME}}/$name/g; s/{{DATE}}/$(date +%Y-%m-%d)/g" "$dest/AGENTS.md"
-git -C "$dest" init -q
+git -C "$dest" init -q -b main
 bash "$ROOT/tools/link-common.sh" "$name"
 echo "만듦: $dest — 이 폴더에서 세션을 연다. 과제 도구 로그는 .claude/settings.local.json의 env HARNESS_TASK로 켠다."
