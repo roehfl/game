@@ -19,6 +19,7 @@ RUN 경로는 세션 폴더 `D:/game/proxywar` 기준(`harness/runs/`는 git에�
 - `RUN/reference/evidence.md` L32 (자기 보고): G-007을 "구조"로만 읽고 "수치"에는 적용하지 않았다. 기존 문장의 빈틈이 원인이다.
 - 원 항목: hsl L-007 `D:/game/hsl/harness/library/2026-10-24-s1-combat-core/EXPERIENCE.md` (`D:/game/hsl/harness/LESSONS.md` L14, 승격 → G-007).
 - 재관찰: proxywar/2026-10-27-proxywar-kickoff
+- 재관찰: proxywar/2026-10-27-proxywar-sim-core-1a
 
 ### 편집 3 — 다음 단계 제안에서 외부 서비스 이용 수단·비용을 단정 (G-005 재관찰)
 - `RUN/reference/evidence.md` L8 (C5, 사용자 교정): 다음 단계 제안에서 "프로토타입 테스트에는 개발용 API 키와 호출 비용이 생긴다"고 단정했다. 사용자: "내 클로드 구독 못쓰나?" 조사해 보니 본인 PC의 `claude -p` 헤드리스로 개발 테스트가 가능해(공식 문구 미확인) 결정 기록을 고쳤다.
