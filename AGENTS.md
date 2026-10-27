@@ -11,9 +11,10 @@
 
 - `harness/` — 자기개선 루프와 범위 판정 기준(`README.md`), 공통 교훈 색인(`LESSONS.md`, G-NNN), 공통 라이브러리
 - `.claude/skills/harness-reflect/`, `.claude/agents/harness-*.md` — 루프. 게임 폴더에는 정션으로 연결된다
+- `.claude/skills/chatgpt-connector-review/` — 외부 리뷰(사용자가 요청할 때만, GitHub 원격이 있는 게임). 게임 폴더에는 정션으로 연결된다
 - `tools/` — `new-game.sh`(새 게임), `link-common.sh`(공통 스킬·서브에이전트 정션), `harness-tool-log.sh`(도구 로그 훅)
 - `templates/game/` — 새 게임 하네스 틀
-- `docs/specs/` — 공통 하네스 설계서. `docs/archive/reports/` — `design-report` 스킬이 만드는 HTML 보고서
+- `docs/specs/` — 공통 하네스 설계서. `docs/archive/reports/` — 지난 HTML 보고서
 
 ## 작업 방식
 
