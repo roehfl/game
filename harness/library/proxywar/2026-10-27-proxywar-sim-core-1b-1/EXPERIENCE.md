@@ -48,6 +48,8 @@ RUN 경로는 세션 폴더 `D:/game/proxywar` 기준이다(`harness/runs/`는 g
 - 근거: `RUN/reference/evidence.md` L25(서브에이전트 2개가 heredoc 따옴표 오류로 첫 시도에 실패하고 Write로 다시 씀). 사용자 교정이 아니다. 비용은 재시도 1회이고 원인이 오류 메시지에 바로 보인다(`RUN/DECISION.md` L9·L16).
 - 재관찰(세 번째, 두 게임): hsl `D:/game/hsl/harness/runs/2026-10-24-s1-combat-core/reference/evidence.md` L17·L24(hsl DECISION #5 보류), proxywar `D:/game/harness/library/proxywar/2026-10-27-proxywar-sim-core-1a/EXPERIENCE.md` 보류 편집 3. hsl 폴더는 고치지 않았다.
 - 번호: 채택되면 그 시점 공통 색인의 다음 빈 번호를 쓴다(지금은 G-009). 번호를 점유하지 않았다.
+- 재관찰: proxywar/2026-10-28-proxywar-sim-core-1b-2 (긴 heredoc이 `ENAMETOOLONG`으로 실패, 편집 미제안. `D:/game/proxywar/harness/runs/2026-10-28-proxywar-sim-core-1b-2/reference/evidence.md` L18)
+- 재관찰: proxywar/2026-10-28-proxywar-sim-core-1b-3 (긴 python heredoc이 `unexpected EOF`로 실패, 다시 보류(네 번째). `D:/game/harness/library/proxywar/2026-10-28-proxywar-sim-core-1b-3/EXPERIENCE.md`)
 
 ### 게임 범위로 따로 기록한 것
 편집 4(채택, L-004)는 `D:/game/proxywar/harness/library/2026-10-27-proxywar-sim-core-1b-1/EXPERIENCE.md`에 있다.
